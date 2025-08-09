@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>空调库存管理系统</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('qijingchun_new.svg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-blend-mode: overlay;
+            background-color: rgba(255, 255, 255, 0.85);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+            background-color: white;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+
+        .quantity-btn:hover {
+            background-color: #45a049;
+        }
+
+        .quantity-btn.decrease {
+            background-color: #f44336;
+            margin-right: 10px;
+        }
+
+        .quantity-btn.decrease:hover {
+            background-color: #d32f2f;
+        }
+
+        .quantity-btn.increase {
+            margin-left: 10px;
+        }
+
+        .quantity {
+            min-width: 40px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .total-section {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f2f2f2;
+            border-radius: 5px;
+            text-align: right;
+        }
+
+        .total-section p {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .delete-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .price-input {
+            width: 80px;
+            padding: 5px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+
+        .delete-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        .add-form {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: inline-block;
+            width: 100px;
+        }
+
+        .form-group input {
+            padding: 8px;
+            width: 200px;
+        }
+
+        .add-form button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .add-form button:hover {
+            background-color: #45a049;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            th, td {
+                padding: 10px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>空调库存管理系统</h1>
+        <table id="airConditionerTable">
+            <thead>
+                <tr>
+                    <th>空调名称</th>
+                    <th>型号</th>
+                    <th>价格</th>
+                    <th>库存数量</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>舒适侠 III</td>
+                    <td>KFR-26GW/BpR3AQD600(B1)</td>
+                    <td><input type="number" class="price-input" value="1999" onchange="updatePrice(this)"></td>
+                    <td>
+                        <div class="quantity-control">
+                            <button class="quantity-btn decrease" onclick="changeQuantity(this, -1)">-</button>
+                            <span class="quantity">0</span>
+                            <button class="quantity-btn increase" onclick="changeQuantity(this, 1)">+</button>
+                        </div>
+                    </td>
+                    <td>
+                        <button class="delete-btn" onclick="deleteRow(this)">删除</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>舒适侠 III</td>
+                    <td>KFR-35GW/BpR3AQD600(B1)</td>
+                    <td><input type="number" class="price-input" value="2099" onchange="updatePrice(this)"></td>
+                    <td>
+                        <div class="quantity-control">
+                            <button class="quantity-btn decrease" onclick="changeQuantity(this, -1)">-</button>
+                            <span class="quantity">0</span>
+                            <button class="quantity-btn increase" onclick="changeQuantity(this, 1)">+</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>京福 II</td>
+                    <td>KFR-35GW/BpR3AQG18(B1)</td>
+                    <td><input type="number" class="price-input" value="2099" onchange="updatePrice(this)"></td>
+                    <td>
+                        <div class="quantity-control">
+                            <button class="quantity-btn decrease" onclick="changeQuantity(this, -1)">-</button>
+                            <span class="quantity">0</span>
+                            <button class="quantity-btn increase" onclick="changeQuantity(this, 1)">+</button>
+                        </div>
+                    </td>
+                    <td>
+                        <button class="delete-btn" onclick="deleteRow(this)">删除</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>舒爽风</td>
+                    <td>KFR-35GW/BpR3CQB700(B1)</td>
+                    <td><input type="number" class="price-input" value="2869" onchange="updatePrice(this)"></td>
+                    <td>
+                        <div class="quantity-control">
+                            <button class="quantity-btn decrease" onclick="changeQuantity(this, -1)">-</button>
+                            <span class="quantity">0</span>
+                            <button class="quantity-btn increase" onclick="changeQuantity(this, 1)">+</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>奥知音 II</td>
+                    <td>KFR-35GW/BpR3DQG700(B1)</td>
+                    <td><input type="number" class="price-input" value="3399" onchange="updatePrice(this)"></td>
+                    <td>
+                        <div class="quantity-control">
+                            <button class="quantity-btn decrease" onclick="changeQuantity(this, -1)">-</button>
+                            <span class="quantity">0</span>
+                            <button class="quantity-btn increase" onclick="changeQuantity(this, 1)">+</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>舒适侠</td>
+                    <td>KFR-51LW/BPR3AQD600(B3)</td>
+                    <td><input type="number" class="price-input" value="4799" onchange="updatePrice(this)"></td>
+                    <td>
+                        <div class="quantity-control">
+                            <button class="quantity-btn decrease" onclick="changeQuantity(this, -1)">-</button>
+                            <span class="quantity">0</span>
+                            <button class="quantity-btn increase" onclick="changeQuantity(this, 1)">+</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>奥知音</td>
+                    <td>KFR-72LW/BpR3AQD600(B1)</td>
+                    <td><input type="number" class="price-input" value="6399" onchange="updatePrice(this)"></td>
+                    <td>
+                        <div class="quantity-control">
+                            <button class="quantity-btn decrease" onclick="changeQuantity(this, -1)">-</button>
+                            <span class="quantity">0</span>
+                            <button class="quantity-btn increase" onclick="changeQuantity(this, 1)">+</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>省电侠</td>
+                    <td>KFR-51LW/BpR3GQS1(B1)</td>
+                    <td><input type="number" class="price-input" value="4999" onchange="updatePrice(this)"></td>
+                    <td>
+                        <div class="quantity-control">
+                            <button class="quantity-btn decrease" onclick="changeQuantity(this, -1)">-</button>
+                            <span class="quantity">0</span>
+                            <button class="quantity-btn increase" onclick="changeQuantity(this, 1)">+</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>倾静</td>
+                    <td>KFR-35GW/BpR3AQF19(B1)</td>
+                    <td><input type="number" class="price-input" value="2999" onchange="updatePrice(this)"></td>
+                    <td>
+                        <div class="quantity-control">
+                            <button class="quantity-btn decrease" onclick="changeQuantity(this, -1)">-</button>
+                            <span class="quantity">0</span>
+                            <button class="quantity-btn increase" onclick="changeQuantity(this, 1)">+</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>京颜</td>
+                    <td>KFR-35GW/BpR3AQJ18(B3)</td>
+                    <td><input type="number" class="price-input" value="1649" onchange="updatePrice(this)"></td>
+                    <td>
+                        <div class="quantity-control">
+                            <button class="quantity-btn decrease" onclick="changeQuantity(this, -1)">-</button>
+                            <span class="quantity">0</span>
+                            <button class="quantity-btn increase" onclick="changeQuantity(this, 1)">+</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="total-section">
+            <p>总库存数量: <span id="totalQuantity">0</span></p>
+            <button id="exportBtn" onclick="exportStockData()" style="margin-top: 10px; background-color: #2196F3; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer;">导出库存数据</button>
+        </div>
+
+        <div class="add-form">
+            <h2>添加新空调</h2>
+            <div class="form-group">
+                <label for="name">空调名称:</label>
+                <input type="text" id="name" required>
+            </div>
+            <div class="form-group">
+                <label for="model">型号:</label>
+                <input type="text" id="model" required>
+            </div>
+            <div class="form-group">
+                <label for="price">价格:</label>
+                <input type="text" id="price" required>
+            </div>
+            <button onclick="addNewAirConditioner()">添加</button>
+        </div>
+    </div>
+
+    <script>
+        // 存储配置
+        const STORAGE_CONFIG = {
+            maxRecords: 100, // 最大记录数
+            filePath: 'stock_records.txt' // 存储文件路径
+        };
+
+        // 导出库存数据到本地存储文件
+        function exportStockData() {
+            const airConditioners = [];
+            const rows = document.querySelectorAll('#airConditionerTable tbody tr');
+
+            rows.forEach(row => {
+                const name = row.cells[0].textContent;
+                const model = row.cells[1].textContent;
+                const priceInput = row.cells[2].querySelector('.price-input');
+                const price = priceInput ? parseInt(priceInput.value) : 0;
+                const quantity = parseInt(row.cells[3].querySelector('.quantity').textContent);
+
+                airConditioners.push({
+                    name,
+                    model,
+                    price,
+                    quantity
+                });
+            });
+
+            const stockData = {
+                timestamp: new Date().toISOString(),
+                totalQuantity: parseInt(document.getElementById('totalQuantity').textContent),
+                airConditioners
+            };
+
+            // 保存数据到localStorage
+            try {
+                localStorage.setItem('lastStockData', JSON.stringify(stockData));
+                console.log('库存数据已保存到本地存储');
+                alert('库存数据已保存，下次打开页面时将自动加载');
+            } catch (e) {
+                console.error('保存库存数据失败:', e);
+                alert('保存数据失败: ' + e.message);
+            }
+
+            // 同时提供数据让用户复制或提示运行批处理文件
+            const dataStr = JSON.stringify(stockData, null, 2);
+
+            // 复制到剪贴板
+            navigator.clipboard.writeText(dataStr).then(() => {
+                console.log('数据已复制到剪贴板');
+            }).catch(err => {
+                console.error('无法复制数据: ', err);
+            });
+        }
+
+        // 环形缓冲区管理类
+        class CircularBuffer {
+            constructor(maxSize) {
+                this.buffer = [];
+                this.maxSize = maxSize;
+                this.currentIndex = 0;
+            }
+
+            add(item) {
+                if (this.buffer.length < this.maxSize) {
+                    this.buffer.push(item);
+                } else {
+                    this.buffer[this.currentIndex] = item;
+                    this.currentIndex = (this.currentIndex + 1) % this.maxSize;
+                }
+            }
+
+            getAll() {
+                // 返回按时间顺序排序的记录
+                return [...this.buffer].sort((a, b) => {
+                    return new Date(a.timestamp) - new Date(b.timestamp);
+                });
+            }
+        }
+        function changeQuantity(button, delta) {
+            const quantityElement = button.parentElement.querySelector('.quantity');
+            let quantity = parseInt(quantityElement.textContent);
+            quantity = Math.max(0, quantity + delta);
+            quantityElement.textContent = quantity;
+            updateTotalQuantity();
+            autoSaveData();
+        }
+
+        function updateTotalQuantity() {
+            const quantityElements = document.querySelectorAll('.quantity');
+            let total = 0;
+            quantityElements.forEach(element => {
+                total += parseInt(element.textContent);
+            });
+            document.getElementById('totalQuantity').textContent = total;
+        }
+
+        function deleteRow(button) {
+            const row = button.parentElement.parentElement;
+            row.parentNode.removeChild(row);
+            updateTotalQuantity();
+            autoSaveData();
+        }
+
+        function updatePrice(input) {
+            // 确保价格为正数
+            const value = parseInt(input.value);
+            if (isNaN(value) || value < 0) {
+                alert('价格必须是非负数');
+                input.value = 0;
+            }
+            autoSaveData();
+        }
+
+        // 从本地存储加载数据
+        function loadStockRecords() {
+            try {
+                const savedData = localStorage.getItem('lastStockData');
+                if (savedData) {
+                    const stockData = JSON.parse(savedData);
+                    console.log('已从本地存储加载库存数据');
+                    populateStockData(stockData);
+                } else {
+                    console.log('没有找到保存的库存数据');
+                }
+            } catch (e) {
+                console.error('加载库存数据失败:', e);
+            }
+        }
+
+        // 填充库存数据到表格
+        function populateStockData(stockData) {
+            if (!stockData || !stockData.airConditioners) return;
+
+            // 清空现有表格行
+            const tableBody = document.querySelector('#airConditionerTable tbody');
+            tableBody.innerHTML = '';
+
+            // 填充数据
+            stockData.airConditioners.forEach(ac => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${ac.name}</td>
+                    <td>${ac.model}</td>
+                    <td><input type="number" class="price-input" value="${ac.price}" onchange="updatePrice(this)"></td>
+                    <td>
+                        <div class="quantity-control">
+                            <button class="quantity-btn decrease" onclick="changeQuantity(this, -1)">-</button>
+                            <span class="quantity">${ac.quantity}</span>
+                            <button class="quantity-btn increase" onclick="changeQuantity(this, 1)">+</button>
+                        </div>
+                    </td>
+                    <td>
+                        <button class="delete-btn" onclick="deleteRow(this)">删除</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // 更新总数量
+            updateTotalQuantity();
+        }
+
+        // 自动保存数据
+        function autoSaveData() {
+            const airConditioners = [];
+            const rows = document.querySelectorAll('#airConditionerTable tbody tr');
+
+            rows.forEach(row => {
+                const name = row.cells[0].textContent;
+                const model = row.cells[1].textContent;
+                const priceInput = row.cells[2].querySelector('.price-input');
+                const price = priceInput ? parseInt(priceInput.value) : 0;
+                const quantity = parseInt(row.cells[3].querySelector('.quantity').textContent);
+
+                airConditioners.push({
+                    name,
+                    model,
+                    price,
+                    quantity
+                });
+            });
+
+            const stockData = {
+                timestamp: new Date().toISOString(),
+                totalQuantity: parseInt(document.getElementById('totalQuantity').textContent),
+                airConditioners
+            };
+
+            // 保存数据到localStorage
+            try {
+                localStorage.setItem('lastStockData', JSON.stringify(stockData));
+                console.log('库存数据已自动保存');
+            } catch (e) {
+                console.error('自动保存库存数据失败:', e);
+            }
+        }
+
+        // 保存记录到本地存储
+        function saveToLocalStorage() {
+            try {
+                const records = stockBuffer.getAll();
+                localStorage.setItem('stockRecords', JSON.stringify(records));
+                console.log('已保存 ' + records.length + ' 条库存记录到本地存储');
+            } catch (e) {
+                console.error('保存库存记录失败:', e);
+            }
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStockRecords();
+        });
+
+        function addNewAirConditioner() {
+            const name = document.getElementById('name').value;
+            const model = document.getElementById('model').value;
+            const price = document.getElementById('price').value;
+            
+            if (!name || !model || !price) {
+                alert('请填写完整信息');
+                return;
+            }
+            
+            // 验证价格是数字
+            if (isNaN(parseInt(price)) || parseInt(price) < 0) {
+                alert('价格必须是非负数');
+                return;
+            }
+            
+            const table = document.getElementById('airConditionerTable').getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
+            
+            const nameCell = newRow.insertCell(0);
+            const modelCell = newRow.insertCell(1);
+            const priceCell = newRow.insertCell(2);
+            const quantityCell = newRow.insertCell(3);
+            const actionCell = newRow.insertCell(4);
+            
+            nameCell.textContent = name;
+            modelCell.textContent = model;
+            priceCell.innerHTML = `<input type="number" class="price-input" value="${price}" onchange="updatePrice(this)">`;
+            
+            quantityCell.innerHTML = `
+                <div class="quantity-control">
+                    <button class="quantity-btn decrease" onclick="changeQuantity(this, -1)">-</button>
+                    <span class="quantity">0</span>
+                    <button class="quantity-btn increase" onclick="changeQuantity(this, 1)">+</button>
+                </div>
+            `;
+            
+            actionCell.innerHTML = `
+                <button class="delete-btn" onclick="deleteRow(this)">删除</button>
+            `;
+            
+            // 清空表单
+            document.getElementById('name').value = '';
+            document.getElementById('model').value = '';
+            document.getElementById('price').value = '';
+            
+            updateTotalQuantity();
+            autoSaveData();
+        }
+    </script>
+</body>
+</html>

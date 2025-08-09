@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <!-- 背景 -->
+  <rect width="1200" height="800" fill="#f0f0f0"/>
+  
+  <!-- 远山 -->
+  <path d="M0 400 Q 300 250, 600 350 T 1200 300 L 1200 800 L 0 800 Z" fill="#b3c7d6"/>
+  <path d="M0 450 Q 300 350, 600 400 T 1200 350 L 1200 800 L 0 800 Z" fill="#94b0c2"/>
+  
+  <!-- 近山 -->
+  <path d="M0 500 Q 300 420, 600 470 T 1200 420 L 1200 800 L 0 800 Z" fill="#7a9cb8"/>
+  
+  <!-- 树木 -->
+  <g fill="#3a5a40">
+    <rect x="150" y="600" width="20" height="80"/>
+    <path d="M160 500 L 210 580 L 110 580 Z"/>
+    <path d="M160 460 L 210 540 L 110 540 Z"/>
+  
+    <rect x="300" y="620" width="16" height="60"/>
+    <path d="M308 520 L 358 600 L 258 600 Z"/>
+    <path d="M308 480 L 358 560 L 258 560 Z"/>
+  
+    <rect x="450" y="590" width="18" height="90"/>
+    <path d="M459 490 L 509 570 L 409 570 Z"/>
+    <path d="M459 450 L 509 530 L 409 530 Z"/>
+  </g>
+  
+  <!-- 人物轮廓 - 齐静春 -->
+  <g fill="#333">
+    <!-- 头部 -->
+    <circle cx="600" cy="280" r="40"/>
+    <!-- 身体 -->
+    <path d="M600 320 L 600 450 L 550 550 L 650 550 L 600 450 Z"/>
+    <!-- 衣袖 -->
+    <path d="M600 350 L 530 450 L 540 480 L 590 380 Z"/>
+    <path d="M600 350 L 670 450 L 660 480 L 610 380 Z"/>
+    <!-- 头发 -->
+    <path d="M560 250 L 560 230 L 580 220 L 600 210 L 620 220 L 640 230 L 640 250 L 620 240 L 600 230 L 580 240 Z"/>
+  </g>
+  
+  <!-- 光晕效果 -->
+  <circle cx="600" cy="200" r="100" fill="rgba(255, 255, 200, 0.3)"/>
+  <circle cx="600" cy="200" r="150" fill="rgba(255, 255, 200, 0.1)"/>
+  
+  <!-- 文字 - 齐静春 -->
+  <text x="600" y="150" font-family="'Microsoft YaHei', sans-serif" font-size="40" text-anchor="middle" fill="#333">齐静春</text>
+</svg>
